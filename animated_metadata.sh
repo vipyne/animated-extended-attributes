@@ -126,12 +126,13 @@ write_metadata ()
   xattr -wx com.apple.metadata:_kMDItemUserTags "$3" "$1";
 }
 
-# update_display path-to-error-file
-update_display ()
-{
-  # evaluate applescript and print out the results to the ether...
-  osascript -e 'tell application "Finder" to delete (make new folder at (front window))' > /dev/null 2>&1;
-}
+# using this function slowed down the 'animation' :/
+# # update_display path-to-error-file
+# update_display ()
+# {
+#   # evaluate applescript and print out the results to the ether...
+#   osascript -e 'tell application "Finder" to delete (make new folder at (front window))' > /dev/null 2>&1;
+# }
 
 
 ########################################
@@ -147,7 +148,7 @@ FINDER_i=0;
 for i in "${intro[@]}"; do
   write_metadata "$file_to_animate" "${intro_finder[$FINDER_i ]}" "$i";
   let "FINDER_i = $FINDER_i + 1";
-  update_display;
+  osascript -e 'tell application "Finder" to delete (make new folder at (front window) with properties {name: ".hide-this"})' > /dev/null 2>&1;
 done
 wait;
 
@@ -158,7 +159,7 @@ while [ $COUNTER -lt $loops ]; do
   for i in "${loop[@]}"; do
     write_metadata "$file_to_animate" "${loop_finder[$FINDER_l ]}" "$i";
     let "FINDER_l = $FINDER_l + 1";
-    update_display;
+    osascript -e 'tell application "Finder" to delete (make new folder at (front window) with properties {name: ".hide-this"})' > /dev/null 2>&1;
   done
   let COUNTER+=1;
 done
@@ -169,10 +170,10 @@ FINDER_o=0;
 for i in "${outro[@]}"; do
   write_metadata "$file_to_animate" "${outro_finder[$FINDER_o ]}" "$i";
   let "FINDER_o = $FINDER_o + 1";
-  update_display;
+  osascript -e 'tell application "Finder" to delete (make new folder at (front window) with properties {name: ".hide-this"})' > /dev/null 2>&1;
 done
 wait;
 
 # clear all tags again
 xattr -c $file_to_animate; # blank
-update_display;
+osascript -e 'tell application "Finder" to delete (make new folder at (front window) with properties {name: ".hide-this"})' > /dev/null 2>&1;
